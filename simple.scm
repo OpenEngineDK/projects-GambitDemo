@@ -11,6 +11,7 @@
 
 using namespace OpenEngine::Core;
 void scheme_apply0(___SCMOBJ);
+void scheme_apply0_x(___SCMOBJ);
 
 ___SCMOBJ fun = NULL;
 
@@ -27,13 +28,14 @@ template <class EventArg>
 class Wrap : public IListener<EventArg> {
 ___SCMOBJ obj;
 public:
-Wrap(___SCMOBJ o) : obj(o) {
-logger.info << ___BODY(o) << logger.end;
+Wrap(___SCMOBJ o)  {
+obj = ___EXT(___make_pair)(o, ___NUL, ___STILL);
+//logger.info << ___BODY(o) << logger.end;
 }
 
 void Handle(EventArg arg) {
-logger.info << ___BODY(obj) << logger.end;
-scheme_apply0(obj);
+//logger.info << ___BODY(obj) << logger.end;
+scheme_apply0_x(obj);
 }
 };
 
@@ -57,6 +59,10 @@ header
 (c-define (scheme-apply0 fun) (scheme-object) void "scheme_apply0" ""
   (fun))
 
+(c-define (scheme-apply0-x fun) (scheme-object) void "scheme_apply0_x" ""
+  ( (car fun)))
+
+
 (define (make-list n e)
   (if (zero? n)
       '()
@@ -78,13 +84,14 @@ header
       (##gc)
       (call-fun))))
 
-(define test-att 
-  (c-lambda (IEngine* scheme-object) void
+(define (test-att eng fun)
+  ((c-lambda (IEngine* scheme-object) void
 #<<ATT
 Wrap<ProcessEventArg> *w = new Wrap<ProcessEventArg>(___arg2);
 IEngine* eng = ___arg1;
 eng->ProcessEvent().Attach(*w);
 ATT
+) eng fun 
 ))
 
 
@@ -92,19 +99,24 @@ ATT
           (print "wooo")
           (newline)
           (test-att e
-                    (##still-obj-refcount-inc!
-                      (##still-copy (lambda ()
-                                      (print "was?")
-                                      (newline)))))
+                    ;(##still-obj-refcount-inc!  
+                    ;(##still-copy                    
+                        (lambda ()
+                          (make-garbage 100)
+                          ;(print "was?")
+                          ;(newline)
+                          ))
+                                               
+                     ; ))
           )
 
 
-; (include "remote-debugger/debuggee.scm")
-; (make-rdi-host "localhost:20000")
+ ; (include "remote-debugger/debuggee.scm")
+ ; (make-rdi-host "localhost:20000")
 
-; (thread-start!
-;  (make-thread
-;   (lambda () (##repl-debug-main))))
+ ; (thread-start!
+ ;  (make-thread
+ ;   (lambda () (##repl-debug-main))))
 
 
 ;(debug)
