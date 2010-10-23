@@ -41,11 +41,12 @@ header
       (cons (make-list 100 (lambda () (print n) (newline)))
             (make-garbage (- n 1)))))
 
-(begin
-  (let ((x 7) (y 42))
-    (set-fun (caar (make-garbage 100)))
-    (##gc)
-    (call-fun)
-    (set-fun (caar (make-garbage 100)))
-    (##gc)
-    (call-fun)))
+(c-define (run_simple) () void "run_simple" ""
+  (begin
+    (let ((x 7) (y 42))
+      (set-fun (caar (make-garbage 100)))
+      (##gc)
+      (call-fun)
+      (set-fun (caar (make-garbage 100)))
+      (##gc)
+      (call-fun))))

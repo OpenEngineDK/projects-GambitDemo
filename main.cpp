@@ -16,15 +16,16 @@
 
 #include <Display/QtEnvironment.h>
 
-extern void* oe_exported_engine;
+// extern void* oe_exported_engine;
 
 // Scheme boilerplate
 #define ___VERSION 406000
 extern "C" {
 #include "gambit.h"
-#include "myscheme.h"
+//#include "myscheme.h"
+void run_simple ___P((),());
 }
-#define GAMBIT_LIBRARY_LINKER ____20_myscheme__
+#define GAMBIT_LIBRARY_LINKER ____20_simple__
 ___BEGIN_C_LINKAGE
 extern ___mod_or_lnk GAMBIT_LIBRARY_LINKER (___global_state_struct*);
 ___END_C_LINKAGE
@@ -47,10 +48,7 @@ int main(int argc, char** argv) {
                         //, new QtEnvironment()
                         );
 
-    oe_exported_engine = &setup->GetEngine();
-    // 
-    
-
+    // oe_exported_engine = &setup->GetEngine();
 
     // Scheme setup
     ___setup_params_struct setup_params;
@@ -59,14 +57,14 @@ int main(int argc, char** argv) {
     setup_params.linker  = GAMBIT_LIBRARY_LINKER;
     ___setup(&setup_params);
 
-    // run scheme
-    myscheme();
+    // // run scheme
+    run_simple();
+
+    // Start the engine.
+    setup->GetEngine().Start();
 
     // Scheme cleanup
     ___cleanup();
-
-    // Start the engine.
-    // setup->GetEngine().Start();
 
     // Return when the engine stops.
     return EXIT_SUCCESS;

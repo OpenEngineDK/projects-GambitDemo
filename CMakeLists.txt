@@ -10,25 +10,30 @@ ADD_LIBRARY(mycfoo
 )
 
 ADD_CUSTOM_COMMAND(
-  OUTPUT myscheme.c myscheme_.c
-  DEPENDS myscheme.scm
-  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/myscheme.scm myscheme.scm
-  COMMAND gsc -link myscheme.scm
-  COMMAND gsc -c myscheme.scm
+  OUTPUT simple.c simple_.c # myscheme.c myscheme_.c
+  DEPENDS simple.scm # myscheme.scm
+  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
+  COMMAND gsc -link simple.scm # myscheme.scm #-cc-options "-I${CMAKE_CURRENT_SOURCE_DIR}"
+  COMMAND gsc -c simple.scm # myscheme.scm #-cc-options "-I${CMAKE_CURRENT_SOURCE_DIR}"
   COMMENT "compiling scheme code"
 )
 
-ADD_CUSTOM_TARGET(Simple
-#  OUTPUT  simple
-  DEPENDS simple.scm
-  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
-#  COMMAND gsc -link simple.scm
-  COMMAND gsc -exe simple.scm
-)
-#ADD_EXECUTABLE(simple)
+# ADD_CUSTOM_TARGET(Simple
+# #  OUTPUT  simple
+#   DEPENDS simple.scm
+#   COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
+# #  COMMAND gsc -link simple.scm
+#   COMMAND gsc -exe simple.scm
+# )
+# #ADD_EXECUTABLE(simple)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D___LIBRARY")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D___LIBRARY")
+
+ADD_LIBRARY(simple
+  simple.c
+  simple_.c
+)
 
 ADD_LIBRARY(myscheme
   # generated
@@ -66,5 +71,6 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   Extensions_Qt
   Extensions_SetupHelpers  
   Extensions_GambitScheme
-  myscheme
+#  myscheme
+  simple
 )
