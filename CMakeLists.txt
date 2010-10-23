@@ -18,6 +18,15 @@ ADD_CUSTOM_COMMAND(
   COMMENT "compiling scheme code"
 )
 
+ADD_CUSTOM_TARGET(Simple
+#  OUTPUT  simple
+  DEPENDS simple.scm
+  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
+#  COMMAND gsc -link simple.scm
+  COMMAND gsc -exe simple.scm
+)
+#ADD_EXECUTABLE(simple)
+
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D___LIBRARY")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D___LIBRARY")
 
