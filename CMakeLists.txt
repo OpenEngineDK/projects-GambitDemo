@@ -1,3 +1,5 @@
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # Project name. Should be the same as the project directory name and
 # will become the name of the binary target.
 SET( PROJECT_NAME "GambitDemo")
@@ -9,7 +11,17 @@ ADD_LIBRARY(mycfoo
   mycfoo.cpp
 )
 
+QT4_WRAP_UI(UI_SOURCE
+  GambitUI.ui
+)
+QT4_WRAP_CPP(MOC_SOURCE
+  GambitUI.h
+)
+
+
 SET(GAMBITC "${OE_LIB_DIR}/gambit/bin/gsc")
+
+
 
 ADD_CUSTOM_COMMAND(
   OUTPUT  objects.cpp objects_.cpp
@@ -62,6 +74,9 @@ TARGET_LINK_LIBRARIES(simple gambits)
 SET( PROJECT_SOURCES
   # Add all the cpp source files here
   main.cpp
+  ${MOC_SOURCE}
+  ${UI_SOURCE}
+  GambitUI.cpp
 )
 
 # Include needed to use SDL under Mac OS X

@@ -13,6 +13,7 @@ darcs-dev /projects/GambitDemo fh.daimi.au.dk:/users/cgd/code/projects/GambitDem
 darcs /extensions/SetupHelpers           http://openengine.dk/code/extensions/SetupHelpers
 darcs /extensions/HUD                    http://openengine.dk/code/extensions/HUD
 darcs /extensions/SDL                    http://openengine.dk/code/extensions/SDL
+darcs /extensions/Qt                    http://openengine.dk/code/extensions/Qt
 darcs /extensions/SDLImage               http://openengine.dk/code/extensions/SDLImage
 darcs /extensions/CairoResource          http://openengine.dk/code/extensions/CairoResource
 darcs /extensions/OpenGLRenderer         http://openengine.dk/code/extensions/OpenGLRenderer

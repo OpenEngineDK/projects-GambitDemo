@@ -17,12 +17,16 @@
 #include <Display/QtEnvironment.h>
 
 
+#include "GambitUI.h"
+
+
 // Scheme boilerplate
 #define ___VERSION 406000
 #include "gambit.h"
 extern void* oe_exported_engine;
 void run_simple ___P((),());
 void set_engine ___P((OpenEngine::Core::IEngine* engine),());
+void do_eval ___P((char * str),());
 
 #define GAMBIT_LIBRARY_LINKER ____20_simple__
 ___BEGIN_C_LINKAGE
@@ -36,36 +40,74 @@ ___END_C_LINKAGE
 using namespace OpenEngine;
 using namespace OpenEngine::Core;
 using namespace OpenEngine::Utils;
-//using namespace OpenEngine::Display;
+using namespace OpenEngine::Display;
 
 
 
 int main(int argc, char** argv) {
     // Create simple setup
+    QtEnvironment *env = new QtEnvironment(false);
     SimpleSetup* setup =
-        new SimpleSetup("Example Project Title"
-                        //, new QtEnvironment()
+        new SimpleSetup("Example Project Title", 
+                        env
                         );
 
-    //oe_exported_engine = &setup->GetEngine();
+
+    GambitUI *ui = new GambitUI(*env, *setup);
+
+
+    logger.info << "hej verden? " << logger.end;
+
+     
+    
+    int debug_settings = ___DEBUG_SETTINGS_INITIAL;
+    
+    // -:d- (force repl io to be stdin/stdout since terminal isn't
+    // -attached)
+    debug_settings =
+        (debug_settings
+         & ~___DEBUG_SETTINGS_REPL_MASK)
+        | (___DEBUG_SETTINGS_REPL_STDIO
+           << ___DEBUG_SETTINGS_REPL_SHIFT);
+    // -:da
+    debug_settings =
+        (debug_settings
+         & ~___DEBUG_SETTINGS_UNCAUGHT_MASK)
+        | (___DEBUG_SETTINGS_UNCAUGHT_ALL
+           << ___DEBUG_SETTINGS_UNCAUGHT_SHIFT);
+    // -:dr
+    debug_settings =
+        (debug_settings
+         & ~___DEBUG_SETTINGS_ERROR_MASK)
+        | (___DEBUG_SETTINGS_ERROR_REPL
+           << ___DEBUG_SETTINGS_ERROR_SHIFT);
+    // -:d2
+    // debug_settings =
+    //     (debug_settings & ~___DEBUG_SETTINGS_LEVEL_MASK)
+    //     | (2 << ___DEBUG_SETTINGS_LEVEL_SHIFT);
+
+
 
     // Scheme setup
     ___setup_params_struct setup_params;
     ___setup_params_reset (&setup_params);
     setup_params.version = ___VERSION;
     setup_params.linker  = GAMBIT_LIBRARY_LINKER;
+    setup_params.debug_settings = debug_settings;
     ___setup(&setup_params);
 
     // // run scheme
-    //run_simple();
-    
     set_engine(&setup->GetEngine());
+
+    do_eval("(+ 2 2)");
+
 
     // Start the engine.
     setup->GetEngine().Start();
 
     // Scheme cleanup
     ___cleanup();
+
 
     // Return when the engine stops.
     return EXIT_SUCCESS;
