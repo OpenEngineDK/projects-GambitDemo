@@ -26,7 +26,7 @@ void GambitUI::enterText() {
     string str = ui->lineEdit->text().toStdString();
     logger.info << str << logger.end;
 
-do_eval((char *)(str.c_str()));
+    do_eval((char *)(str.c_str()));
 
     ui->lineEdit->setText(QString());
 }

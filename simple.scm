@@ -2,7 +2,12 @@
 ;;   ./make.py Simple
 ;;   ./build/GambitDemo/simple
 
-(include "objects.scm")
+;; (include "objects.scm")
+
+(c-declare "#include <Core/IEngine.h>")
+(c-declare "using namespace OpenEngine::Core;")
+(c-define-type IEngine "IEngine")
+(c-define-type IEngine* (pointer IEngine))
 
 (c-declare #<<header
 
@@ -81,12 +86,9 @@ header
   (let ([engine (**make-object-IEngine** e)])
     (count-process engine)))
 
-
 (c-define (do_eval str) (char-string) void "do_eval" ""
   (print (eval (read (open-input-string str))))
-  (newline)
-  )
-
+  (newline))
 
  ; (include "remote-debugger/debuggee.scm")
  ; (make-rdi-host "localhost:20000")

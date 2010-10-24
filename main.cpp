@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     setup_params.debug_settings = debug_settings;
     ___setup(&setup_params);
 
-    // // run scheme
+    // run scheme
     set_engine(&setup->GetEngine());
 
     do_eval("(+ 2 2)");

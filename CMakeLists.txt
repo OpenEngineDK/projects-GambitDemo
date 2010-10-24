@@ -4,13 +4,6 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # will become the name of the binary target.
 SET( PROJECT_NAME "GambitDemo")
 
-# GAMBIT_ADD_LIBRARY(myscheme main.scm)
-
-ADD_LIBRARY(mycfoo
-  mycfoo.h
-  mycfoo.cpp
-)
-
 QT4_WRAP_UI(UI_SOURCE
   GambitUI.ui
 )
@@ -20,46 +13,33 @@ QT4_WRAP_CPP(MOC_SOURCE
 
 
 SET(GAMBITC "${OE_LIB_DIR}/gambit/bin/gsc")
-
-
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D___LIBRARY")
+#SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D___LIBRARY")
+ADD_DEFINITIONS(-D___LIBRARY -w)
 
 ADD_CUSTOM_COMMAND(
   OUTPUT  objects.cpp objects_.cpp
   DEPENDS objects.scm
   COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/objects.scm objects.scm
-  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -link objects.scm
-  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -c objects.scm
-  COMMAND cp objects.c objects.cpp
+  COMMAND ${GAMBITC} -track-scheme -link -l ${GAMBIT_LIB_DIR}/_gambc objects
+  COMMAND mv objects.c objects.cpp
   COMMAND cp objects_.c objects_.cpp
-  COMMENT "compiling scheme code"
 )
+
+ADD_LIBRARY(objects
+  objects.cpp
+  objects_.cpp
+)
+
+TARGET_LINK_LIBRARIES(objects Extensions_GambitScheme)
 
 ADD_CUSTOM_COMMAND(
   OUTPUT  simple.cpp simple_.cpp
-  DEPENDS simple.scm
+  DEPENDS simple.scm objects_.cpp
   COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
-  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -link simple.scm
-  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -c simple.scm
+  COMMAND ${GAMBITC} -link -l objects_ simple.scm
   COMMAND mv simple.c simple.cpp
-  COMMAND mv simple_.c simple_.cpp
-  COMMENT "compiling scheme code"
-)
-
-# ADD_CUSTOM_TARGET(Simple
-# #  OUTPUT  simple
-#   DEPENDS simple.scm
-#   COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
-# #  COMMAND gsc -link simple.scm
-#   COMMAND gsc -exe simple.scm
-# )
-# #ADD_EXECUTABLE(simple)
-
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D___LIBRARY")
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D___LIBRARY")
-
-ADD_LIBRARY(gambits
-  objects.cpp
-  objects_.cpp
+  COMMAND cp simple_.c simple_.cpp
 )
 
 ADD_LIBRARY(simple
@@ -67,8 +47,7 @@ ADD_LIBRARY(simple
   simple_.cpp
 )
 
-ADD_DEPENDENCIES(simple gambits)
-TARGET_LINK_LIBRARIES(simple gambits)
+TARGET_LINK_LIBRARIES(simple objects)
 
 # Project source code list
 SET( PROJECT_SOURCES
@@ -100,7 +79,6 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   # Extension dependencies
   Extensions_Qt
   Extensions_SetupHelpers  
-  Extensions_GambitScheme
-#  myscheme
+  # Scheme scripting
   simple
 )
