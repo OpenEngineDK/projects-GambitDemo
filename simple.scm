@@ -38,7 +38,7 @@ header
   (fun))
 
 (c-define (scheme-apply0-x fun) (scheme-object) void "scheme_apply0_x" ""
-  ( (car fun)))
+  ((car fun)))
 
 
 (define (make-list n e)
@@ -80,6 +80,12 @@ header
 (c-define (set_engine e) (IEngine*) void "set_engine" ""
   (let ([engine (**make-object-IEngine** e)])
     (count-process engine)))
+
+
+(c-define (do_eval str) (char-string) void "do_eval" ""
+  (print (eval (read (open-input-string str))))
+  (newline)
+  )
 
 
  ; (include "remote-debugger/debuggee.scm")
