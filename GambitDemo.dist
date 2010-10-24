@@ -41,6 +41,7 @@ darwin /libraries http://openengine.dk/data/libraries/pcre-osx-i32.zip
 darwin /libraries http://openengine.dk/data/libraries/pcrecpp-osx-i32.zip
 
 # linux libraries
+linux /libraries http://openengine.dk/data/libraries/gambit-linux32.tar.gz
 
 # project data
 

@@ -1,15 +1,13 @@
-
 ;; use this demo with:
 ;;   ./make.py Simple
 ;;   ./build/GambitDemo/simple
 
+(include "objects.scm")
 
 (c-declare #<<header
 
 #include <Logging/Logger.h>
-#include <Core/IEngine.h>
 
-using namespace OpenEngine::Core;
 void scheme_apply0(___SCMOBJ);
 void scheme_apply0_x(___SCMOBJ);
 
@@ -24,28 +22,8 @@ void call_fun() {
   scheme_apply0(fun);
 }
 
-template <class EventArg>
-class Wrap : public IListener<EventArg> {
-___SCMOBJ obj;
-public:
-Wrap(___SCMOBJ o)  {
-obj = ___EXT(___make_pair)(o, ___NUL, ___STILL);
-//logger.info << ___BODY(o) << logger.end;
-}
-
-void Handle(EventArg arg) {
-//logger.info << ___BODY(obj) << logger.end;
-scheme_apply0_x(obj);
-}
-};
-
 header
 )
-
-(c-define-type IEngine "IEngine")
-(c-define-type IEngine* (pointer IEngine))
-
-
 
 (define (set-fun fun)
   ((c-lambda (scheme-object) void
@@ -84,31 +62,24 @@ header
       (##gc)
       (call-fun))))
 
-(define (test-att eng fun)
-  ((c-lambda (IEngine* scheme-object) void
-#<<ATT
-Wrap<ProcessEventArg> *w = new Wrap<ProcessEventArg>(___arg2);
-IEngine* eng = ___arg1;
-eng->ProcessEvent().Attach(*w);
-ATT
-) eng fun 
-))
+(define (println str)
+  (print str)
+  (newline))
 
+;; Event demo
+(define (count-process engine)
+  (let ([process-count 0])
+    (obj-call (obj-get engine 'ProcessEvent) 'Attach
+              (lambda (arg)
+                (set! process-count (+ process-count 1))))
+    (obj-call (obj-get engine 'DeinitializeEvent) 'Attach
+              (lambda (arg)
+                (print "process count: ")
+                (println process-count)))))
 
 (c-define (set_engine e) (IEngine*) void "set_engine" ""
-          (print "wooo")
-          (newline)
-          (test-att e
-                    ;(##still-obj-refcount-inc!  
-                    ;(##still-copy                    
-                        (lambda ()
-                          (make-garbage 100)
-                          ;(print "was?")
-                          ;(newline)
-                          ))
-                                               
-                     ; ))
-          )
+  (let ([engine (**make-object-IEngine** e)])
+    (count-process engine)))
 
 
  ; (include "remote-debugger/debuggee.scm")

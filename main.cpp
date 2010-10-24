@@ -16,15 +16,14 @@
 
 #include <Display/QtEnvironment.h>
 
-// extern void* oe_exported_engine;
 
 // Scheme boilerplate
 #define ___VERSION 406000
-extern "C" {
 #include "gambit.h"
-//#include "myscheme.h"
+extern void* oe_exported_engine;
 void run_simple ___P((),());
-}
+void set_engine ___P((OpenEngine::Core::IEngine* engine),());
+
 #define GAMBIT_LIBRARY_LINKER ____20_simple__
 ___BEGIN_C_LINKAGE
 extern ___mod_or_lnk GAMBIT_LIBRARY_LINKER (___global_state_struct*);
@@ -48,7 +47,7 @@ int main(int argc, char** argv) {
                         //, new QtEnvironment()
                         );
 
-    // oe_exported_engine = &setup->GetEngine();
+    //oe_exported_engine = &setup->GetEngine();
 
     // Scheme setup
     ___setup_params_struct setup_params;
@@ -58,7 +57,9 @@ int main(int argc, char** argv) {
     ___setup(&setup_params);
 
     // // run scheme
-    run_simple();
+    //run_simple();
+    
+    set_engine(&setup->GetEngine());
 
     // Start the engine.
     setup->GetEngine().Start();

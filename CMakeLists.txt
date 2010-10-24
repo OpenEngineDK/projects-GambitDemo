@@ -9,12 +9,27 @@ ADD_LIBRARY(mycfoo
   mycfoo.cpp
 )
 
+SET(GAMBITC "${OE_LIB_DIR}/gambit/bin/gsc")
+
 ADD_CUSTOM_COMMAND(
-  OUTPUT simple.c simple_.c # myscheme.c myscheme_.c
-  DEPENDS simple.scm # myscheme.scm
+  OUTPUT  objects.cpp objects_.cpp
+  DEPENDS objects.scm
+  COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/objects.scm objects.scm
+  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -link objects.scm
+  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -c objects.scm
+  COMMAND cp objects.c objects.cpp
+  COMMAND cp objects_.c objects_.cpp
+  COMMENT "compiling scheme code"
+)
+
+ADD_CUSTOM_COMMAND(
+  OUTPUT  simple.cpp simple_.cpp
+  DEPENDS simple.scm
   COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/simple.scm simple.scm
-  COMMAND gsc -link simple.scm # myscheme.scm #-cc-options "-I${CMAKE_CURRENT_SOURCE_DIR}"
-  COMMAND gsc -c simple.scm # myscheme.scm #-cc-options "-I${CMAKE_CURRENT_SOURCE_DIR}"
+  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -link simple.scm
+  COMMAND ${GAMBITC} -l ${GAMBIT_LIB_DIR}/_gambc -c simple.scm
+  COMMAND mv simple.c simple.cpp
+  COMMAND mv simple_.c simple_.cpp
   COMMENT "compiling scheme code"
 )
 
@@ -30,18 +45,18 @@ ADD_CUSTOM_COMMAND(
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D___LIBRARY")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D___LIBRARY")
 
+ADD_LIBRARY(gambits
+  objects.cpp
+  objects_.cpp
+)
+
 ADD_LIBRARY(simple
-  simple.c
-  simple_.c
+  simple.cpp
+  simple_.cpp
 )
 
-ADD_LIBRARY(myscheme
-  # generated
-  myscheme.c
-  myscheme_.c
-)
-
-TARGET_LINK_LIBRARIES(myscheme mycfoo)
+ADD_DEPENDENCIES(simple gambits)
+TARGET_LINK_LIBRARIES(simple gambits)
 
 # Project source code list
 SET( PROJECT_SOURCES
