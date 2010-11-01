@@ -9,6 +9,10 @@ darcs-dev / fh.daimi.au.dk:/users/cgd/code/openengine
 darcs /projects/GambitDemo http://openengine.dk/code/projects/GambitDemo
 darcs-dev /projects/GambitDemo fh.daimi.au.dk:/users/cgd/code/projects/GambitDemo
 
+# dists
+dist /extensions/GambitScheme/GambitScheme.dist http://openengine.dk/code/extensions/GambitScheme/GambitScheme.dist
+dist /extensions/Reflect/Reflect.dist http://openengine.dk/code/extensions/Reflect/Reflect.dist
+
 # required extensions
 darcs /extensions/SetupHelpers           http://openengine.dk/code/extensions/SetupHelpers
 darcs /extensions/HUD                    http://openengine.dk/code/extensions/HUD
@@ -20,7 +24,7 @@ darcs /extensions/OpenGLRenderer         http://openengine.dk/code/extensions/Op
 darcs /extensions/TGAResource            http://openengine.dk/code/extensions/TGAResource
 darcs /extensions/OBJResource            http://openengine.dk/code/extensions/OBJResource
 darcs /extensions/AccelerationStructures http://openengine.dk/code/extensions/AccelerationStructures
-darcs /extensions/GambitScheme           http://openengine.dk/code/extensions/GambitScheme
+
 
 darcs-dev /extensions/SetupHelpers           fh.daimi.au.dk:/users/cgd/code/extensions/SetupHelpers
 darcs-dev /extensions/HUD                    fh.daimi.au.dk:/users/cgd/code/extensions/HUD
@@ -31,7 +35,7 @@ darcs-dev /extensions/OpenGLRenderer         fh.daimi.au.dk:/users/cgd/code/exte
 darcs-dev /extensions/TGAResource            fh.daimi.au.dk:/users/cgd/code/extensions/TGAResource
 darcs-dev /extensions/OBJResource            fh.daimi.au.dk:/users/cgd/code/extensions/OBJResource
 darcs-dev /extensions/AccelerationStructures fh.daimi.au.dk:/users/cgd/code/extensions/AccelerationStructures
-darcs-dev /extensions/GambitScheme           fh.daimi.au.dk:/users/cgd/code/extensions/GambitScheme
+
 
 # windows libraries
 win32 /libraries http://openengine.dk/data/libraries/boost-win32.zip
@@ -44,7 +48,7 @@ darwin /libraries http://openengine.dk/data/libraries/pcre-osx-i32.zip
 darwin /libraries http://openengine.dk/data/libraries/pcrecpp-osx-i32.zip
 
 # linux libraries
-linux /libraries http://openengine.dk/data/libraries/gambit-linux32.tar.gz
+
 
 # project data
 

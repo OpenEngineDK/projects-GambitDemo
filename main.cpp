@@ -16,9 +16,9 @@
 
 #include <Display/QtEnvironment.h>
 
-
+#include <Scene/TransformationNode.h>
 #include "GambitUI.h"
-
+#include <Utils/Reflector.h>
 
 // Scheme boilerplate
 #define ___VERSION 406000
@@ -41,7 +41,10 @@ using namespace OpenEngine;
 using namespace OpenEngine::Core;
 using namespace OpenEngine::Utils;
 using namespace OpenEngine::Display;
+using namespace OpenEngine::Scene;
 
+#define REFLECT(x) extern void x();
+#include <Reflect/MetaClasses.h>
 
 
 int main(int argc, char** argv) {
@@ -55,10 +58,7 @@ int main(int argc, char** argv) {
 
     GambitUI *ui = new GambitUI(*env, *setup);
 
-
-    logger.info << "hej verden? " << logger.end;
-
-     
+  
     
     int debug_settings = ___DEBUG_SETTINGS_INITIAL;
     
@@ -102,8 +102,27 @@ int main(int argc, char** argv) {
     do_eval("(+ 2 2)");
 
 
+    // Test some reflection...
+#define REFLECT(x) x();
+#include <Reflect/MetaClasses.h>
+
+    Reflector *r = Reflector::GetInstance();
+    TransformationNode *t = new TransformationNode();
+
+    logger.info << t->GetPosition() << logger.end;
+
+    ReflectedObj *o = r->Reflect(t);
+
+    o->Call("Move",1.0, 2.0, 3.0);
+
+    //o->Call("GetPosition");
+
+    logger.info << t->GetPosition() << logger.end;
+
+    
+
     // Start the engine.
-    setup->GetEngine().Start();
+    //setup->GetEngine().Start();
 
     // Scheme cleanup
     ___cleanup();
@@ -112,3 +131,4 @@ int main(int argc, char** argv) {
     // Return when the engine stops.
     return EXIT_SUCCESS;
 }
+

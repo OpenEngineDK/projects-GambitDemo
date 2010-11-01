@@ -79,6 +79,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
   # Extension dependencies
   Extensions_Qt
   Extensions_SetupHelpers  
+  Extensions_Reflect
   # Scheme scripting
   simple
 )
